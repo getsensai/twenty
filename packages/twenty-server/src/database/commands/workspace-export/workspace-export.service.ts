@@ -3,7 +3,7 @@ import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { createWriteStream, mkdirSync } from 'fs';
 import type { WriteStream } from 'fs';
 
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, type EntityMetadata, Repository } from 'typeorm';
 
 import { ObjectMetadataEntity } from 'src/engine/metadata-modules/object-metadata/object-metadata.entity';
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
@@ -98,13 +98,18 @@ export class WorkspaceExportService {
     workspaceId: string,
     stream: WriteStream,
   ): Promise<void> {
-    // Export the workspace row itself (uses id, not workspaceId)
-    await this.exportCoreEntityByColumn(
-      'workspace',
-      'id',
-      workspaceId,
-      stream,
+    const workspaceEntityMetadata = this.dataSource.entityMetadatas.find(
+      (entityMetadata) => entityMetadata.tableName === 'workspace',
     );
+
+    if (workspaceEntityMetadata) {
+      await this.exportCoreEntity(
+        workspaceEntityMetadata,
+        'id',
+        workspaceId,
+        stream,
+      );
+    }
 
     const entityMetadatas = getCoreEntityMetadatasWithWorkspaceId(
       this.dataSource,
@@ -112,12 +117,11 @@ export class WorkspaceExportService {
 
     for (const entityMetadata of entityMetadatas) {
       try {
-        await this.exportCoreEntityByColumn(
-          entityMetadata.tableName,
+        await this.exportCoreEntity(
+          entityMetadata,
           'workspaceId',
           workspaceId,
           stream,
-          entityMetadata.schema,
         );
       } catch (error) {
         this.logger.warn(
@@ -127,13 +131,26 @@ export class WorkspaceExportService {
     }
   }
 
-  private async exportCoreEntityByColumn(
-    tableName: string,
+  private buildJsonColumnSet(entityMetadata: EntityMetadata): Set<string> {
+    return new Set(
+      entityMetadata.columns
+        .filter(
+          (column) => column.type === 'jsonb' || column.type === 'json',
+        )
+        .map((column) => column.databaseName),
+    );
+  }
+
+  private async exportCoreEntity(
+    entityMetadata: EntityMetadata,
     filterColumn: string,
     filterValue: string,
     stream: WriteStream,
-    schema = 'core',
   ): Promise<void> {
+    const schema = entityMetadata.schema || 'core';
+    const tableName = entityMetadata.tableName;
+    const jsonColumns = this.buildJsonColumnSet(entityMetadata);
+
     const queryRunner = this.dataSource.createQueryRunner();
 
     try {
@@ -156,7 +173,10 @@ export class WorkspaceExportService {
           const columnValues: Record<string, string> = {};
 
           for (const [columnName, value] of Object.entries(row)) {
-            columnValues[columnName] = formatSqlValue(value);
+            columnValues[columnName] = formatSqlValue(
+              value,
+              jsonColumns.has(columnName),
+            );
           }
 
           stream.write(

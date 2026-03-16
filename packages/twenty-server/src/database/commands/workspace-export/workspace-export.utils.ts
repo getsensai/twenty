@@ -3,8 +3,16 @@ import { isDefined } from 'twenty-shared/utils';
 const escapeString = (value: string): string =>
   `'${value.replace(/'/g, "''")}'`;
 
-export const formatSqlValue = (value: unknown): string => {
+export const formatSqlValue = (
+  value: unknown,
+  isJsonColumn = false,
+): string => {
   if (!isDefined(value)) return 'NULL';
+
+  if (isJsonColumn) {
+    return escapeString(JSON.stringify(value));
+  }
+
   if (typeof value === 'boolean') return value ? 'TRUE' : 'FALSE';
   if (value instanceof Date) return escapeString(value.toISOString());
 
