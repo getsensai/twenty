@@ -25,3 +25,4 @@ export type {
 export { WorkspaceMigrationV2ExceptionCode } from './types/MetadataValidationError';
 export { addCustomSuffixIfIsReserved } from './utils/add-custom-suffix-if-reserved.util';
 export { computeMetadataNameFromLabel } from './utils/compute-metadata-name-from-label.util';
+export { computeMetadataNamesFromLabels } from './utils/compute-metadata-names-from-labels.util';
