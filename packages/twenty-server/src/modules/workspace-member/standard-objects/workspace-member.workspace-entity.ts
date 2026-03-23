@@ -62,6 +62,19 @@ export const SEARCH_FIELDS_FOR_WORKSPACE_MEMBER: FieldTypeAndNameMetadata[] = [
   { name: USER_EMAIL_FIELD_NAME, type: FieldMetadataType.TEXT },
 ];
 
+export type WorkspaceMemberNotificationPreferences = {
+  newRecordAssignments: boolean;
+  taskDueDateReminders: boolean;
+  weeklyActivityDigest: boolean;
+};
+
+export const DEFAULT_NOTIFICATION_PREFERENCES: WorkspaceMemberNotificationPreferences =
+  {
+    newRecordAssignments: true,
+    taskDueDateReminders: true,
+    weeklyActivityDigest: true,
+  };
+
 export class WorkspaceMemberWorkspaceEntity extends BaseWorkspaceEntity {
   position: number;
   name: FullNameMetadata;
@@ -74,6 +87,7 @@ export class WorkspaceMemberWorkspaceEntity extends BaseWorkspaceEntity {
   timeZone: string;
   dateFormat: string;
   timeFormat: string;
+  notificationPreferences: WorkspaceMemberNotificationPreferences;
   assignedTasks: Relation<TaskWorkspaceEntity[]>;
   favorites: Relation<FavoriteWorkspaceEntity[]>;
   accountOwnerForCompanies: Relation<CompanyWorkspaceEntity[]>;

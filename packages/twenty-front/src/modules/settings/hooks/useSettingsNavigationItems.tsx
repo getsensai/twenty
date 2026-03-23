@@ -16,6 +16,7 @@ import {
   IconApi,
   // IconApps, // TODO: Re-enable when integrations page is ready
   IconAt,
+  IconBell,
   IconCalendarEvent,
   IconColorSwatch,
   type IconComponent,
@@ -94,6 +95,11 @@ const useSettingsNavigationItems = (): SettingsNavigationSection[] => {
           label: t`Experience`,
           path: SettingsPath.Experience,
           Icon: IconColorSwatch,
+        },
+        {
+          label: t`Notifications`,
+          path: SettingsPath.NotificationPreferences,
+          Icon: IconBell,
         },
         {
           label: t`Accounts`,

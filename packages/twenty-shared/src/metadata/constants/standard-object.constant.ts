@@ -3336,6 +3336,9 @@ export const STANDARD_OBJECTS = {
       numberFormat: {
         universalIdentifier: '20202020-7f40-4e7f-b126-11c0eda6b141',
       },
+      notificationPreferences: {
+        universalIdentifier: '20202020-9f1a-4e2b-8c3d-7f6e5d4c3b2a',
+      },
       createdBy: {
         universalIdentifier: '4a3f26d1-033e-4d84-b23a-9adc2fd0c2a8',
       },

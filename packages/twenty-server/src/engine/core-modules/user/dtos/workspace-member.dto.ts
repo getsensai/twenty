@@ -2,6 +2,7 @@ import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 import { IDField } from '@ptc-org/nestjs-query-graphql';
 import { Max, Min } from 'class-validator';
+import { GraphQLJSONObject } from 'graphql-type-json';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 import { RoleDTO } from 'src/engine/metadata-modules/role/dtos/role.dto';
@@ -62,4 +63,7 @@ export class WorkspaceMemberDTO {
 
   @Field(() => WorkspaceMemberNumberFormatEnum, { nullable: true })
   numberFormat?: WorkspaceMemberNumberFormatEnum;
+
+  @Field(() => GraphQLJSONObject, { nullable: true })
+  notificationPreferences?: Record<string, unknown>;
 }
