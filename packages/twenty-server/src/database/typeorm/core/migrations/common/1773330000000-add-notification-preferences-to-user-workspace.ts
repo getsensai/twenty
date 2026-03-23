@@ -7,7 +7,7 @@ export class AddNotificationPreferencesToUserWorkspace1773330000000
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "core"."userWorkspace" ADD "notificationPreferences" jsonb`,
+      `ALTER TABLE "core"."userWorkspace" ADD "notificationPreferences" jsonb NOT NULL DEFAULT '{"newRecordAssignments":true,"taskDueDateReminders":true,"weeklyActivityDigest":true}'::jsonb`,
     );
   }
 
