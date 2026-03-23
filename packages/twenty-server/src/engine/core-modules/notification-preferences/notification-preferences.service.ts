@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
 
@@ -77,7 +77,7 @@ export class NotificationPreferencesService {
           });
 
           if (!isDefined(workspaceMember)) {
-            throw new Error('Workspace member not found');
+            throw new NotFoundException('Workspace member not found');
           }
 
           const currentPreferences =

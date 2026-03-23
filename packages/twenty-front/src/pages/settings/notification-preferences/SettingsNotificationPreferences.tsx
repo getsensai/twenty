@@ -1,8 +1,10 @@
 import { SettingsPageContainer } from '@/settings/components/SettingsPageContainer';
 import { SettingsOptionCardContentToggle } from '@/settings/components/SettingsOptions/SettingsOptionCardContentToggle';
 import { useNotificationPreferences } from '@/settings/notification-preferences/hooks/useNotificationPreferences';
+import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
 import { SubMenuTopBarContainer } from '@/ui/layout/page/components/SubMenuTopBarContainer';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { useEffect } from 'react';
 import { SettingsPath } from 'twenty-shared/types';
 import { getSettingsPath } from 'twenty-shared/utils';
 import { H2Title } from 'twenty-ui/display';
@@ -10,8 +12,17 @@ import { Card, Section } from 'twenty-ui/layout';
 
 export const SettingsNotificationPreferences = () => {
   const { t } = useLingui();
-  const { notificationPreferences, loading, updating, updateNotificationPreferences } =
+  const { enqueueErrorSnackBar } = useSnackBar();
+  const { notificationPreferences, loading, updating, updateError, updateNotificationPreferences } =
     useNotificationPreferences();
+
+  useEffect(() => {
+    if (updateError) {
+      enqueueErrorSnackBar({
+        message: t`Failed to update notification preferences. Please try again.`,
+      });
+    }
+  }, [updateError, enqueueErrorSnackBar, t]);
 
   if (loading) {
     return null;

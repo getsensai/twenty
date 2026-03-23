@@ -21,7 +21,7 @@ export const useNotificationPreferences = () => {
     notificationPreferences: NotificationPreferences;
   }>(GET_NOTIFICATION_PREFERENCES);
 
-  const [updateNotificationPreferencesMutation, { loading: updating }] =
+  const [updateNotificationPreferencesMutation, { loading: updating, error: updateError }] =
     useMutation<
       { updateNotificationPreferences: NotificationPreferences },
       { input: UpdateNotificationPreferencesInput }
@@ -34,13 +34,18 @@ export const useNotificationPreferences = () => {
   const updateNotificationPreferences = async (
     input: UpdateNotificationPreferencesInput,
   ) => {
-    await updateNotificationPreferencesMutation({ variables: { input } });
+    try {
+      await updateNotificationPreferencesMutation({ variables: { input } });
+    } catch {
+      // Error is captured in updateError and surfaced to the caller
+    }
   };
 
   return {
     notificationPreferences,
     loading,
     updating,
+    updateError,
     updateNotificationPreferences,
   };
 };
