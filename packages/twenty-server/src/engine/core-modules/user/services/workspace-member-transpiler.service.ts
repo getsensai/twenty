@@ -63,6 +63,7 @@ export class WorkspaceMemberTranspiler {
       dateFormat,
       calendarStartDay,
       numberFormat,
+      notificationPreferences,
     } = workspaceMemberEntity;
 
     const avatarUrl = this.generateSignedAvatarUrl({
@@ -93,6 +94,10 @@ export class WorkspaceMemberTranspiler {
       roles,
       calendarStartDay,
       numberFormat: numberFormat as WorkspaceMemberNumberFormatEnum,
+      notificationPreferences: notificationPreferences as Record<
+        string,
+        unknown
+      >,
     } satisfies WorkspaceMemberDTO;
   }
 
